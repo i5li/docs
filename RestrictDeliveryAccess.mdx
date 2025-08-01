@@ -1,0 +1,35 @@
+# 🔐 Strict Delivery User Access Enforcement
+
+## Overview
+
+This page documents the implementation of **ZERO TOLERANCE access control** for delivery users in our Laravel-based multi-tenant system. The enforcement ensures that delivery users are strictly confined to a subset of frontend views (`/public/association/delivery/*`) and cannot access any unauthorized routes.
+
+---
+
+## 1. 🎯 Objective
+
+Enforce strict access control over delivery users:
+- ✅ Restrict all access to `/public/association/delivery/**`
+- 🚫 Deny access to any other route in the application
+- 🔄 Automatically redirect unauthorized delivery users
+
+---
+
+## 2. 🔒 Middleware: `EnforceDeliveryAccess`
+
+> **Location:** `app/Http/Middleware/EnforceDeliveryAccess.php`
+
+### Description
+Critical security middleware that checks:
+- Logged-in user has role `delivery`
+- Path starts with allowed delivery URLs
+- Otherwise, the user is redirected to their dashboard
+
+```php
+// Allowed delivery-only paths
+$allowedPaths = [
+    "/a/{$associationSlug}/delivery",
+    "/a/{$associationSlug}/delivery/home",
+    "/a/{$associationSlug}/delivery/statistics",
+    ...
+];
